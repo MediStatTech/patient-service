@@ -11,11 +11,16 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
 
+	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	"github.com/MediStatTech/patient-service/internal/app"
 	s_options "github.com/MediStatTech/patient-service/internal/app/options"
+	"github.com/MediStatTech/patient-service/internal/transport/grpc/patient"
+	"github.com/MediStatTech/patient-service/internal/transport/grpc/patient_address"
+	"github.com/MediStatTech/patient-service/internal/transport/grpc/patient_contact_info"
+	"github.com/MediStatTech/patient-service/internal/transport/grpc/patient_diseas"
 	"github.com/MediStatTech/patient-service/pkg"
-	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
@@ -27,7 +32,10 @@ type Server struct {
 func New(p *pkg.Facade, appInstance *app.Facade) (*Server, error) {
 	grpcTLS := grpc.ServerOption(grpc.EmptyServerOption{})
 	if p.Config.TLSCertFilePath != "" && p.Config.TLSKeyFilePath != "" {
-		p.Logger.Infof("TLS enabled. Cert file: %s, Key file: %s", p.Config.TLSCertFilePath, p.Config.TLSKeyFilePath)
+		p.Logger.Info("TLS enabled", map[string]any{
+			"cert_file": p.Config.TLSCertFilePath,
+			"key_file":  p.Config.TLSKeyFilePath,
+		})
 		creds, err := credentials.NewServerTLSFromFile(p.Config.TLSCertFilePath, p.Config.TLSKeyFilePath)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create new server tls from file: %w", err)
@@ -54,11 +62,22 @@ func New(p *pkg.Facade, appInstance *app.Facade) (*Server, error) {
 		PKG: p,
 	}
 
-	// grpc
+	// gRPC services
+	patientHandler := patient.New(opts)
+	pb_services.RegisterPatientServiceServer(server, patientHandler)
+
+	patientAddressHandler := patient_address.New(opts)
+	pb_services.RegisterPatientAddressServiceServer(server, patientAddressHandler)
+
+	patientContactInfoHandler := patient_contact_info.New(opts)
+	pb_services.RegisterPatientContactInfoServiceServer(server, patientContactInfoHandler)
+
+	patientDiseasHandler := patient_diseas.New(opts)
+	pb_services.RegisterPatientDiseasServiceServer(server, patientDiseasHandler)
 
 	healthServer := health.NewServer()
 	grpc_health_v1.RegisterHealthServer(server, healthServer)
-	healthServer.SetServingStatus("auth.v1.AuthService", grpc_health_v1.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus("patient.v1.PatientService", grpc_health_v1.HealthCheckResponse_SERVING)
 	healthServer.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
 	reflection.Register(server)
 

@@ -1,3 +1,5 @@
+github.com/MediStatTech/MediStat-error v1.0.1 h1:VAK0RlctkFXI83vMglwE/atWZcVTyHlBAay1Y6Hiob0=
+github.com/MediStatTech/MediStat-error v1.0.1/go.mod h1:MHC76TFgLPgHplleo0vt7DeJaEwaQ5LsM1HG2hewTbc=
 github.com/MediStatTech/commitplan v1.0.2 h1:+/e5irGJzx2tP3PpropByzHW8p0cI4t7F8UwsnAD5FQ=
 github.com/MediStatTech/commitplan v1.0.2/go.mod h1:7l2tM5g5yYDUoICNKr08ZtQhBGjkeNP5/TQYswhCxY8=
 github.com/MediStatTech/logger v0.0.0-20260125154403-dc19bcd90420 h1:a6rruaSqFAF9zv0ndKRslOerojrrvn8bz+p6PkU0NUk=
@@ -81,8 +83,8 @@ google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 h1:
 google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217/go.mod h1:7i2o+ce6H/6BluujYR+kqX3GKH+dChPTQU19wjRPiGk=
 google.golang.org/grpc v1.79.1 h1:zGhSi45ODB9/p3VAawt9a+O/MULLl9dpizzNNpq7flY=
 google.golang.org/grpc v1.79.1/go.mod h1:KmT0Kjez+0dde/v2j9vzwoAScgEPx/Bw1CYChhHLrHQ=
-google.golang.org/protobuf v1.36.10 h1:AYd7cD/uASjIL6Q9LiTjz8JLcrh/88q5UObnmY3aOOE=
-google.golang.org/protobuf v1.36.10/go.mod h1:HTf+CrKn2C3g5S8VImy6tdcUvCska2kB7j23XfzDpco=
+google.golang.org/protobuf v1.36.11 h1:fV6ZwhNocDyBLK0dj+fg8ektcVegBBuEolpbTQyBNVE=
+google.golang.org/protobuf v1.36.11/go.mod h1:HTf+CrKn2C3g5S8VImy6tdcUvCska2kB7j23XfzDpco=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 modernc.org/libc v1.66.3 h1:cfCbjTUcdsKyyZZfEUKfoHcP3S0Wkvz3jgSzByEWVCQ=

@@ -9,16 +9,16 @@ import (
 )
 
 type Facade struct {
-	Member *usecases.Facade
+	Patient *usecases.Facade
 }
 
 func New(pkg *pkg.Facade) (*Facade, error) {
-	member, err := member.New(pkg)
+	patientFacade, err := patient.New(pkg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create member: %w", err)
+		return nil, fmt.Errorf("failed to create patient: %w", err)
 	}
 
 	return &Facade{
-		Member: member.UseCases,
+		Patient: patientFacade.UseCases,
 	}, nil
 }

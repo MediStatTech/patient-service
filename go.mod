@@ -2,9 +2,14 @@ module github.com/MediStatTech/patient-service
 
 go 1.25.4
 
+replace github.com/MediStatTech/patient-client => ../patient-client
+
 require (
+	github.com/MediStatTech/MediStat-error v1.0.1
 	github.com/MediStatTech/commitplan v1.0.2
 	github.com/MediStatTech/logger v0.0.0-20260125154403-dc19bcd90420
+	github.com/MediStatTech/patient-client v0.0.0-20260214135923-c83da5a48b26
+	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.11.2
 	github.com/pressly/goose/v3 v3.26.0
@@ -23,5 +28,5 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )

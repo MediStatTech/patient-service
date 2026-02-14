@@ -22,5 +22,7 @@ sql:
         emit_all_enum_values: true
         omit_unused_structs: true
         rename:
-          positions: "Position"
-          staffs: "Staff"
+          patients: "Patient"
+          patient_addresses: "PatientAddress"
+          patient_contact_infos: "PatientContactInfo"
+          patient_diseases: "PatientDiseas"
