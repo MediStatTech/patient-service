@@ -69,6 +69,28 @@ func (q *Queries) DeletePatientContactInfo(ctx context.Context, contactID uuid.U
 	return err
 }
 
+const FindByPatientIDAndPrimary = `-- name: FindByPatientIDAndPrimary :one
+SELECT patient_id, contact_id, phone, email, "primary", created_at, updated_at
+FROM patient_contact_infos
+WHERE patient_id = $1 AND "primary" = true
+LIMIT 1
+`
+
+func (q *Queries) FindByPatientIDAndPrimary(ctx context.Context, patientID uuid.UUID) (PatientContactInfo, error) {
+	row := q.db.QueryRowContext(ctx, FindByPatientIDAndPrimary, patientID)
+	var i PatientContactInfo
+	err := row.Scan(
+		&i.PatientID,
+		&i.ContactID,
+		&i.Phone,
+		&i.Email,
+		&i.Primary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const GetPatientContactInfo = `-- name: GetPatientContactInfo :one
 SELECT patient_id, contact_id, phone, email, "primary", created_at, updated_at
 FROM patient_contact_infos

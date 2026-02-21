@@ -1,4 +1,4 @@
-package get
+package retrieve
 
 import (
 	"context"
@@ -7,17 +7,17 @@ import (
 )
 
 type Interactor struct {
-	contactInfosRepo contracts.PatientContactInfosRepo
-	logger           contracts.Logger
+	patientsRepo contracts.PatientsRepo
+	logger       contracts.Logger
 }
 
 func New(
-	contactInfosRepo contracts.PatientContactInfosRepo,
+	patientsRepo contracts.PatientsRepo,
 	logger contracts.Logger,
 ) *Interactor {
 	return &Interactor{
-		contactInfosRepo: contactInfosRepo,
-		logger:           logger,
+		patientsRepo: patientsRepo,
+		logger:       logger,
 	}
 }
 
@@ -26,12 +26,12 @@ func (it *Interactor) Execute(ctx context.Context, req Request) (*Response, erro
 		return nil, errInvalidRequest
 	}
 
-	contactInfos, err := it.contactInfosRepo.FindByPatientID(ctx, req.PatientID)
+	patient, err := it.patientsRepo.FindByID(ctx, req.PatientID)
 	if err != nil {
-		return nil, errFailedToGetPatientContactInfos.SetInternal(err)
+		return nil, errFailedToRetrievePatient.SetInternal(err)
 	}
 
 	return &Response{
-		PatientContactInfos: contactInfos,
+		Patient: patient,
 	}, nil
 }

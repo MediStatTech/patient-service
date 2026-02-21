@@ -5,6 +5,7 @@ import (
 
 	patient_contact_info_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/create"
 	patient_contact_info_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/get"
+	patient_contact_info_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/retrieve"
 	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
 )
@@ -60,7 +61,9 @@ func (h *Handler) PatientContactInfoGet(
 		return nil, errRequestNil
 	}
 
-	resp, err := h.queries.PatientContactInfoGet.Execute(ctx, patient_contact_info_get.Request{})
+	resp, err := h.queries.PatientContactInfoGet.Execute(ctx, patient_contact_info_get.Request{
+		PatientID: req.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get patient contact infos", map[string]any{"error": err})
 		return nil, err
@@ -79,5 +82,26 @@ func (h *Handler) PatientContactInfoGet(
 
 	return &pb_services.PatientContactInfoGetReply{
 		PatientContactInfos: contactInfos,
+	}, nil
+}
+
+func (h *Handler) PatientContactInfoRetrieve(
+	ctx context.Context,
+	req *pb_services.PatientContactInfoRetrieveRequest,
+) (*pb_services.PatientContactInfoRetrieveReply, error) {
+	if req == nil {
+		return nil, errRequestNil
+	}
+
+	resp, err := h.queries.PatientContactInfoRetrieve.Execute(ctx, patient_contact_info_retrieve.Request{
+		PatientID: req.PatientId,
+	})
+	if err != nil {
+		h.pkg.Logger.Error("Failed to retrieve patient contact info", map[string]any{"error": err})
+		return nil, err
+	}
+
+	return &pb_services.PatientContactInfoRetrieveReply{
+		PatientContactInfo: patientContactInfoPropsToPb(&resp.PatientContactInfo),
 	}, nil
 }

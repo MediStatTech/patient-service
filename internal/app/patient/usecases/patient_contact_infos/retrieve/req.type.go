@@ -1,4 +1,4 @@
-package get
+package retrieve
 
 import "github.com/MediStatTech/patient-service/internal/app/patient/domain"
 
@@ -7,5 +7,5 @@ type Request struct {
 }
 
 type Response struct {
-	PatientContactInfos []*domain.PatientContactInfoProps
+	PatientContactInfo domain.PatientContactInfoProps
 }

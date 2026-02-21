@@ -1,4 +1,4 @@
-package get
+package get_by_staff_id
 
 import (
 	"context"
@@ -7,31 +7,31 @@ import (
 )
 
 type Interactor struct {
-	diseasesRepo contracts.PatientDiseasesRepo
+	patientsRepo contracts.PatientsRepo
 	logger       contracts.Logger
 }
 
 func New(
-	diseasesRepo contracts.PatientDiseasesRepo,
+	patientsRepo contracts.PatientsRepo,
 	logger contracts.Logger,
 ) *Interactor {
 	return &Interactor{
-		diseasesRepo: diseasesRepo,
+		patientsRepo: patientsRepo,
 		logger:       logger,
 	}
 }
 
 func (it *Interactor) Execute(ctx context.Context, req Request) (*Response, error) {
-	if req.PatientID == "" {
+	if req.StaffID == "" {
 		return nil, errInvalidRequest
 	}
 
-	diseases, err := it.diseasesRepo.FindByPatientID(ctx, req.PatientID)
+	patients, err := it.patientsRepo.FindByStaffID(ctx, req.StaffID)
 	if err != nil {
-		return nil, errFailedToGetPatientDiseases.SetInternal(err)
+		return nil, errFailedToGetPatientsByStaffID.SetInternal(err)
 	}
 
 	return &Response{
-		PatientDiseases: diseases,
+		Patients: patients,
 	}, nil
 }

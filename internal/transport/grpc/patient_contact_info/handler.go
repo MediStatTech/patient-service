@@ -1,9 +1,10 @@
 package patient_contact_info
 
 import (
+	s_options "github.com/MediStatTech/patient-service/internal/app/options"
 	patient_contact_info_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/create"
 	patient_contact_info_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/get"
-	s_options "github.com/MediStatTech/patient-service/internal/app/options"
+	patient_contact_info_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/retrieve"
 	"github.com/MediStatTech/patient-service/pkg"
 )
 
@@ -18,7 +19,8 @@ type Commands struct {
 }
 
 type Queries struct {
-	PatientContactInfoGet *patient_contact_info_get.Interactor
+	PatientContactInfoGet      *patient_contact_info_get.Interactor
+	PatientContactInfoRetrieve *patient_contact_info_retrieve.Interactor
 }
 
 func New(opts *s_options.Options) *Handler {
@@ -28,7 +30,8 @@ func New(opts *s_options.Options) *Handler {
 			PatientContactInfoCreate: opts.App.Patient.PatientContactInfoCreate,
 		},
 		queries: &Queries{
-			PatientContactInfoGet: opts.App.Patient.PatientContactInfoGet,
+			PatientContactInfoGet:      opts.App.Patient.PatientContactInfoGet,
+			PatientContactInfoRetrieve: opts.App.Patient.PatientContactInfoRetrieve,
 		},
 	}
 }

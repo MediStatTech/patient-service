@@ -116,8 +116,8 @@ func patientAddressToUpdateParams(address *domain.PatientAddress) []any {
 // Patient Contact Infos Mappers
 // ============================================================================
 
-func toPatientContactInfoProps(contactInfo PatientContactInfo) domain.PatientContactInfoProps {
-	return domain.PatientContactInfoProps{
+func toPatientContactInfoProps(contactInfo PatientContactInfo) *domain.PatientContactInfoProps {
+	return &domain.PatientContactInfoProps{
 		PatientID: contactInfo.PatientID.String(),
 		ContactID: contactInfo.ContactID.String(),
 		Phone:     contactInfo.Phone,

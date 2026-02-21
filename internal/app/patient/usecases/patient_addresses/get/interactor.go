@@ -22,7 +22,11 @@ func New(
 }
 
 func (it *Interactor) Execute(ctx context.Context, req Request) (*Response, error) {
-	addresses, err := it.addressesRepo.FindAll(ctx)
+	if req.PatientID == "" {
+		return nil, errInvalidRequest
+	}
+
+	addresses, err := it.addressesRepo.FindByPatientID(ctx, req.PatientID)
 	if err != nil {
 		return nil, errFailedToGetPatientAddresses.SetInternal(err)
 	}

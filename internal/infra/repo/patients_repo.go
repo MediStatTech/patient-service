@@ -51,6 +51,25 @@ func (r *PatientsRepository) FindByID(ctx context.Context, patientID string) (do
 	return toPatientProps(patient), nil
 }
 
+func (r *PatientsRepository) FindByStaffID(ctx context.Context, staffID string) ([]domain.PatientProps, error) {
+	id, err := uuid.Parse(staffID)
+	if err != nil {
+		return nil, err
+	}
+
+	patients, err := r.queries.ListPatientsByStaffID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]domain.PatientProps, 0, len(patients))
+	for _, patient := range patients {
+		result = append(result, toPatientProps(patient))
+	}
+
+	return result, nil
+}
+
 func (r *PatientsRepository) CreateMut(patient *domain.Patient) *postgres.Mutation {
 	return postgres.NewMutation(
 		CreatePatient,

@@ -10,6 +10,12 @@ FROM patient_contact_infos
 WHERE patient_id = $1
 LIMIT 1;
 
+-- name: FindByPatientIDAndPrimary :one
+SELECT patient_id, contact_id, phone, email, "primary", created_at, updated_at
+FROM patient_contact_infos
+WHERE patient_id = $1 AND "primary" = true
+LIMIT 1;
+
 -- name: ListPatientContactInfos :many
 SELECT patient_id, contact_id, phone, email, "primary", created_at, updated_at
 FROM patient_contact_infos

@@ -10,9 +10,13 @@ import (
 	"github.com/MediStatTech/patient-service/internal"
 	"github.com/MediStatTech/patient-service/internal/health"
 	"github.com/MediStatTech/patient-service/pkg"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		panic(fmt.Sprintf("Failed to load .env file: %v\n", err))
+	}
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 

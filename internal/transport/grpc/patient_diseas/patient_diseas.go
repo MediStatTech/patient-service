@@ -5,6 +5,7 @@ import (
 
 	patient_diseas_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/create"
 	patient_diseas_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/get"
+	patient_diseas_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/retrieve"
 	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
 )
@@ -58,7 +59,9 @@ func (h *Handler) PatientDiseasGet(
 		return nil, errRequestNil
 	}
 
-	resp, err := h.queries.PatientDiseasGet.Execute(ctx, patient_diseas_get.Request{})
+	resp, err := h.queries.PatientDiseasGet.Execute(ctx, patient_diseas_get.Request{
+		PatientID: req.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get patient diseases", map[string]any{"error": err})
 		return nil, err
@@ -77,5 +80,27 @@ func (h *Handler) PatientDiseasGet(
 
 	return &pb_services.PatientDiseasGetReply{
 		PatientDiseases: diseases,
+	}, nil
+}
+
+func (h *Handler) PatientDiseasRetrieve(
+	ctx context.Context,
+	req *pb_services.PatientDiseasRetrieveRequest,
+) (*pb_services.PatientDiseasRetrieveReply, error) {
+	if req == nil {
+		return nil, errRequestNil
+	}
+
+	resp, err := h.queries.PatientDiseasRetrieve.Execute(ctx, patient_diseas_retrieve.Request{
+		PatientID: req.PatientId,
+		DiseasID:  req.DiseasesId,
+	})
+	if err != nil {
+		h.pkg.Logger.Error("Failed to retrieve patient diseas", map[string]any{"error": err})
+		return nil, err
+	}
+
+	return &pb_services.PatientDiseasRetrieveReply{
+		PatientDisease: patientDiseasPropsToPb(resp.PatientDiseas),
 	}, nil
 }

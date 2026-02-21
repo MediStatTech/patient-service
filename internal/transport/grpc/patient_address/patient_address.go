@@ -60,7 +60,9 @@ func (h *Handler) PatientAddressGet(
 		return nil, errRequestNil
 	}
 
-	resp, err := h.queries.PatientAddressGet.Execute(ctx, patient_address_get.Request{})
+	resp, err := h.queries.PatientAddressGet.Execute(ctx, patient_address_get.Request{
+		PatientID: req.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get patient addresses", map[string]any{"error": err})
 		return nil, err

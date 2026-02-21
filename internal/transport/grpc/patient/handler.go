@@ -3,6 +3,8 @@ package patient
 import (
 	patient_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/create"
 	patient_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/get"
+	patient_get_by_staff_id "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/get_by_staff_id"
+	patient_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/retrieve"
 	s_options "github.com/MediStatTech/patient-service/internal/app/options"
 	"github.com/MediStatTech/patient-service/pkg"
 )
@@ -18,7 +20,9 @@ type Commands struct {
 }
 
 type Queries struct {
-	PatientGet *patient_get.Interactor
+	PatientGet          *patient_get.Interactor
+	PatientGetByStaffID *patient_get_by_staff_id.Interactor
+	PatientRetrieve     *patient_retrieve.Interactor
 }
 
 func New(opts *s_options.Options) *Handler {
@@ -28,7 +32,9 @@ func New(opts *s_options.Options) *Handler {
 			PatientCreate: opts.App.Patient.PatientCreate,
 		},
 		queries: &Queries{
-			PatientGet: opts.App.Patient.PatientGet,
+			PatientGet:          opts.App.Patient.PatientGet,
+			PatientGetByStaffID: opts.App.Patient.PatientGetByStaffID,
+			PatientRetrieve:     opts.App.Patient.PatientRetrieve,
 		},
 	}
 }

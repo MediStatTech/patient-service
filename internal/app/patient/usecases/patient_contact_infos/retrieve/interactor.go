@@ -1,4 +1,4 @@
-package get
+package retrieve
 
 import (
 	"context"
@@ -26,12 +26,16 @@ func (it *Interactor) Execute(ctx context.Context, req Request) (*Response, erro
 		return nil, errInvalidRequest
 	}
 
-	contactInfos, err := it.contactInfosRepo.FindByPatientID(ctx, req.PatientID)
+	contactInfos, err := it.contactInfosRepo.FindByPatientIDAndPrimary(ctx, req.PatientID)
 	if err != nil {
-		return nil, errFailedToGetPatientContactInfos.SetInternal(err)
+		return nil, errFailedToRetrievePatientContactInfo.SetInternal(err)
+	}
+
+	if contactInfos == nil {
+		return nil, errNotFound
 	}
 
 	return &Response{
-		PatientContactInfos: contactInfos,
+		PatientContactInfo: *contactInfos,
 	}, nil
 }

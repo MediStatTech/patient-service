@@ -1,11 +1,11 @@
-package get
+package get_by_staff_id
 
 import "github.com/MediStatTech/patient-service/internal/app/patient/domain"
 
 type Request struct {
-	PatientID string
+	StaffID string
 }
 
 type Response struct {
-	PatientContactInfos []*domain.PatientContactInfoProps
+	Patients []domain.PatientProps
 }

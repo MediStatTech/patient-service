@@ -5,9 +5,11 @@ import (
 	"time"
 
 	patient_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/create"
-	patient_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/get"
-	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
+	patient_get_by_staff_id "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/get_by_staff_id"
+	patient_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/retrieve"
+	get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patients/get"
 	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
+	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 )
 
 func (h *Handler) PatientCreate(
@@ -45,24 +47,16 @@ func (h *Handler) PatientCreate(
 		return nil, err
 	}
 
-	// Get the created patient
-	patientsResp, err := h.queries.PatientGet.Execute(ctx, patient_get.Request{})
+	retrieveResp, err := h.queries.PatientRetrieve.Execute(ctx, patient_retrieve.Request{
+		PatientID: resp.PatientID,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get created patient", map[string]any{"error": err})
 		return nil, err
 	}
 
-	// Find the created patient by ID
-	var createdPatient *pb_models.Patient_Read
-	for _, p := range patientsResp.Patients {
-		if p.PatientID == resp.PatientID {
-			createdPatient = patientPropsToPb(p)
-			break
-		}
-	}
-
 	return &pb_services.PatientCreateReply{
-		Patient: createdPatient,
+		Patient: patientPropsToPb(retrieveResp.Patient),
 	}, nil
 }
 
@@ -74,7 +68,7 @@ func (h *Handler) PatientGet(
 		return nil, errRequestNil
 	}
 
-	resp, err := h.queries.PatientGet.Execute(ctx, patient_get.Request{})
+	resp, err := h.queries.PatientGet.Execute(ctx, get.Request{})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get patients", map[string]any{"error": err})
 		return nil, err
@@ -93,5 +87,66 @@ func (h *Handler) PatientGet(
 
 	return &pb_services.PatientGetReply{
 		Patients: patients,
+	}, nil
+}
+
+func (h *Handler) PatientGetByStaffID(
+	ctx context.Context,
+	req *pb_services.PatientGetByStaffIDRequest,
+) (*pb_services.PatientPatientGetByStaffIDReply, error) {
+	if req == nil {
+		return nil, errRequestNil
+	}
+
+	if req.StaffId == "" {
+		return nil, errInvalidPatientData
+	}
+
+	resp, err := h.queries.PatientGetByStaffID.Execute(ctx, patient_get_by_staff_id.Request{
+		StaffID: req.StaffId,
+	})
+	if err != nil {
+		h.pkg.Logger.Error("Failed to get patients by staff id", map[string]any{"error": err})
+		return nil, err
+	}
+
+	if len(resp.Patients) == 0 {
+		return &pb_services.PatientPatientGetByStaffIDReply{
+			Patients: []*pb_models.Patient_Read{},
+		}, nil
+	}
+
+	patients := make([]*pb_models.Patient_Read, 0, len(resp.Patients))
+	for _, patient := range resp.Patients {
+		patients = append(patients, patientPropsToPb(patient))
+	}
+
+	return &pb_services.PatientPatientGetByStaffIDReply{
+		Patients: patients,
+	}, nil
+}
+
+func (h *Handler) PatientRetrieve(
+	ctx context.Context,
+	req *pb_services.PatientRetrieveRequest,
+) (*pb_services.PatientRetrieveReply, error) {
+	if req == nil {
+		return nil, errRequestNil
+	}
+
+	if req.PatientId == "" {
+		return nil, errInvalidPatientData
+	}
+
+	resp, err := h.queries.PatientRetrieve.Execute(ctx, patient_retrieve.Request{
+		PatientID: req.PatientId,
+	})
+	if err != nil {
+		h.pkg.Logger.Error("Failed to retrieve patient", map[string]any{"error": err})
+		return nil, err
+	}
+
+	return &pb_services.PatientRetrieveReply{
+		Patient: patientPropsToPb(resp.Patient),
 	}, nil
 }

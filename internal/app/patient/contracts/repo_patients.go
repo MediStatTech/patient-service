@@ -14,6 +14,7 @@ import (
 type PatientsRepo interface {
 	FindAll(ctx context.Context) ([]domain.PatientProps, error)
 	FindByID(ctx context.Context, patientID string) (domain.PatientProps, error)
+	FindByStaffID(ctx context.Context, staffID string) ([]domain.PatientProps, error)
 	CreateMut(patient *domain.Patient) *postgres.Mutation
 	UpdateMut(patient *domain.Patient) *postgres.Mutation
 	CreateBatchMut(patients []*domain.Patient) []*postgres.Mutation
@@ -38,9 +39,10 @@ type PatientAddressesRepo interface {
 // ============================================================================
 
 type PatientContactInfosRepo interface {
-	FindAll(ctx context.Context) ([]domain.PatientContactInfoProps, error)
-	FindByID(ctx context.Context, contactID string) (domain.PatientContactInfoProps, error)
-	FindByPatientID(ctx context.Context, patientID string) ([]domain.PatientContactInfoProps, error)
+	FindAll(ctx context.Context) ([]*domain.PatientContactInfoProps, error)
+	FindByID(ctx context.Context, contactID string) (*domain.PatientContactInfoProps, error)
+	FindByPatientID(ctx context.Context, patientID string) ([]*domain.PatientContactInfoProps, error)
+	FindByPatientIDAndPrimary(ctx context.Context, patientID string) (*domain.PatientContactInfoProps, error)
 	CreateMut(contactInfo *domain.PatientContactInfo) *postgres.Mutation
 	UpdateMut(contactInfo *domain.PatientContactInfo) *postgres.Mutation
 	DeleteMut(contactID string) *postgres.Mutation
