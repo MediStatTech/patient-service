@@ -3,10 +3,10 @@ package patient_address
 import (
 	"context"
 
+	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
+	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	patient_address_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_addresses/create"
 	patient_address_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_addresses/get"
-	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
-	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
 )
 
 func (h *Handler) PatientAddressCreate(
@@ -33,7 +33,9 @@ func (h *Handler) PatientAddressCreate(
 		return nil, err
 	}
 
-	addressesResp, err := h.queries.PatientAddressGet.Execute(ctx, patient_address_get.Request{})
+	addressesResp, err := h.queries.PatientAddressGet.Execute(ctx, patient_address_get.Request{
+		PatientID: addressData.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get created patient address", map[string]any{"error": err})
 		return nil, err

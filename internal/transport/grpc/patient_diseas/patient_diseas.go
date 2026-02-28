@@ -3,11 +3,11 @@ package patient_diseas
 import (
 	"context"
 
+	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
+	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	patient_diseas_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/create"
 	patient_diseas_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/get"
 	patient_diseas_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_diseases/retrieve"
-	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
-	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
 )
 
 func (h *Handler) PatientDiseasCreate(
@@ -32,7 +32,9 @@ func (h *Handler) PatientDiseasCreate(
 		return nil, err
 	}
 
-	diseasesResp, err := h.queries.PatientDiseasGet.Execute(ctx, patient_diseas_get.Request{})
+	diseasesResp, err := h.queries.PatientDiseasGet.Execute(ctx, patient_diseas_get.Request{
+		PatientID: req.PatientDiseas.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get created patient diseas", map[string]any{"error": err})
 		return nil, err

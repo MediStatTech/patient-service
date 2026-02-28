@@ -3,11 +3,11 @@ package patient_contact_info
 import (
 	"context"
 
+	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
+	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
 	patient_contact_info_create "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/create"
 	patient_contact_info_get "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/get"
 	patient_contact_info_retrieve "github.com/MediStatTech/patient-service/internal/app/patient/usecases/patient_contact_infos/retrieve"
-	pb_services "github.com/MediStatTech/patient-client/pb/go/services/v1"
-	pb_models "github.com/MediStatTech/patient-client/pb/go/models/v1"
 )
 
 func (h *Handler) PatientContactInfoCreate(
@@ -34,16 +34,18 @@ func (h *Handler) PatientContactInfoCreate(
 		return nil, err
 	}
 
-	contactInfosResp, err := h.queries.PatientContactInfoGet.Execute(ctx, patient_contact_info_get.Request{})
+	contactInfosResp, err := h.queries.PatientContactInfoGet.Execute(ctx, patient_contact_info_get.Request{
+		PatientID: req.PatientContactInfo.PatientId,
+	})
 	if err != nil {
 		h.pkg.Logger.Error("Failed to get created patient contact info", map[string]any{"error": err})
 		return nil, err
 	}
 
 	var createdContactInfo *pb_models.PatientContactInfo_Read
-	for _, ci := range contactInfosResp.PatientContactInfos {
-		if ci.ContactID == resp.ContactID {
-			createdContactInfo = patientContactInfoPropsToPb(ci)
+	for _, contactInfo := range contactInfosResp.PatientContactInfos {
+		if contactInfo.ContactID == resp.ContactID {
+			createdContactInfo = patientContactInfoPropsToPb(contactInfo)
 			break
 		}
 	}
